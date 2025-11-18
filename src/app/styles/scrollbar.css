@@ -1,0 +1,29 @@
+/* Глобальные стили для скроллбара */
+::-webkit-scrollbar {
+  width: 12px; /* Ширина вертикального скроллбара */
+  height: 12px; /* Высота горизонтального скроллбара */
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937; /* Цвет фона трека (gray-800 из Tailwind) */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #84cc16; /* Цвет ползунка (lime-500 из Tailwind) */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #65a30d; /* Цвет ползунка при наведении (lime-600 из Tailwind) */
+}
+
+/* Дополнительно: для Firefox */
+html {
+  scrollbar-width: none;
+  scrollbar-color: #84cc16 #1f2937; /* thumb color, track color */
+}
+
+.no-scrollbar {
+    scrollbar-width: none !important;
+}
