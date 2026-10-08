@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material";
 
 import MusicApi from "../../../app/api/MusicApi";
+import API_BASE_URL from "../../../app/config";
 import { toast } from "react-toastify";
 
 export default function ProfileMusic() {
@@ -139,7 +140,7 @@ export default function ProfileMusic() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={`http://127.0.0.1:7000/static/music/${track.artist}/${track.image}`}
+                    src={`${API_BASE_URL}/static/music/${track.artist}/${track.image}`}
                     alt={track.title}
                     className="w-12 h-12 rounded-lg object-cover"
                   />
@@ -161,7 +162,7 @@ export default function ProfileMusic() {
           <div className="flex items-center justify-between max-xs:flex-col max-xs:gap-4">
             <div className="flex items-center gap-4">
               <img
-                src={`http://127.0.0.1:7000/static/music/${currentTrack.artist}/${currentTrack.image}`}
+                src={`${API_BASE_URL}/static/music/${currentTrack.artist}/${currentTrack.image}`}
                 alt={currentTrack.title}
                 className="w-14 h-14 rounded-lg object-cover"
               />
@@ -236,7 +237,7 @@ export default function ProfileMusic() {
 
           <audio
             ref={audioRef}
-            src={`http://127.0.0.1:7000/static/music/${currentTrack.artist}/${currentTrack.track}`}
+            src={`${API_BASE_URL}/static/music/${currentTrack.artist}/${currentTrack.track}`}
             onLoadedMetadata={onLoadedMetadata}
             onTimeUpdate={onTimeUpdate}
             onEnded={handleNext}

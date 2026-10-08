@@ -1,7 +1,8 @@
 import axios from "axios";
 import BaseApi from "./BaseApi";
+import API_BASE_URL from "../config";
 
-const API_BASE_USERS = "http://127.0.0.1:7000/api/v1/users";
+const API_BASE_USERS = `${API_BASE_URL}/api/v1/users`;
 
 class UserAPI extends BaseApi {
   // === ВХОД ===

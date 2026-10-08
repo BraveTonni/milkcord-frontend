@@ -1,7 +1,8 @@
 import axios from "axios";
 import BaseApi from "./BaseApi";
+import API_BASE_URL from "../config";
 
-const API_BASE_MESSAGES = "http://127.0.0.1:7000/api/v1/messages";
+const API_BASE_MESSAGES = `${API_BASE_URL}/api/v1/messages`;
 
 class MessagesApi extends BaseApi {
   static async getMessages(chat_id) {

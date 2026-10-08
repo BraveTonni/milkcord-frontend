@@ -1,6 +1,10 @@
+import API_BASE_URL from "../config";
+
 class WebSocketAPI {
   constructor() {
-    this.baseUrl = "http://127.0.0.1:7000/api/v1/ws";
+    // Браузер принимает только ws:// или wss://
+    const wsOrigin = API_BASE_URL.replace(/^http/, "ws");
+    this.baseUrl = `${wsOrigin}/api/v1/ws`;
     this.ws = null;
     this.eventHandlers = {}; // { eventName: [handlers] }
     this.reconnectDelay = 3000;
@@ -9,7 +13,7 @@ class WebSocketAPI {
 
   // === ПОДКЛЮЧЕНИЕ ===
   connect(token = null) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
         return resolve(this.ws);
       }

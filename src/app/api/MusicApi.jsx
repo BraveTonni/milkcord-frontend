@@ -1,7 +1,8 @@
 import axios from "axios";
 import BaseApi from "./BaseApi";
+import API_BASE_URL from "../config";
 
-const API_BASE_MUSIC = "http://127.0.0.1:7000/api/v1/music";
+const API_BASE_MUSIC = `${API_BASE_URL}/api/v1/music`;
 
 class MusicApi extends BaseApi {
   // === ПОЛУЧЕНИЕ ВСЕХ ТРЕКОВ ===

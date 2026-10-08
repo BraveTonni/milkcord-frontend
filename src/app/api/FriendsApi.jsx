@@ -1,7 +1,8 @@
 import axios from "axios";
 import BaseApi from "./BaseApi";
+import API_BASE_URL from "../config";
 
-const API_BASE_FRIENDS = "http://127.0.0.1:7000/api/v1/friends";
+const API_BASE_FRIENDS = `${API_BASE_URL}/api/v1/friends`;
 
 class FriendsAPI extends BaseApi {
   static getAccessToken() {

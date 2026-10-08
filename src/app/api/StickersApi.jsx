@@ -1,7 +1,8 @@
 import axios from "axios";
 import BaseApi from "./BaseApi";
+import API_BASE_URL from "../config";
 
-const API_BASE_STICKERS = "http://127.0.0.1:7000/api/v1/stickers";
+const API_BASE_STICKERS = `${API_BASE_URL}/api/v1/stickers`;
 
 class StickersApi extends BaseApi {
   // === ПОЛУЧЕНИЕ ВСЕХ СТИКЕРОВ ===
