@@ -8,7 +8,9 @@ class BaseApi {
   static setAccessToken(token) {
     const expires = new Date();
     expires.setDate(expires.getDate() + 30);
-    document.cookie = `access_token=${token}; expires=${expires.toUTCString()}; path=/; Secure; SameSite=Lax`;
+    // Secure-флаг только по https: на http://localhost он запретил бы куку
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `access_token=${token}; expires=${expires.toUTCString()}; path=/; SameSite=Lax${secure}`;
   }
 
   static logout() {
