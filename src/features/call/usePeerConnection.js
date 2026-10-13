@@ -1,5 +1,4 @@
 import { useCallback, useRef } from "react";
-import { dumpPcInfo } from "./helpers/dumpPcInfo";
 
 export function usePeerConnection({ callState, send }) {
   const pc = useRef(null);
@@ -29,24 +28,22 @@ export function usePeerConnection({ callState, send }) {
     pc.current.ontrack = (e) => {
   const stream = e.streams && e.streams[0];
   if (!stream) return;
-  console.log("[usePeerConnection] ontrack:", stream.id, stream.getTracks().map(t => ({ id: t.id, kind: t.kind, readyState: t.readyState })));
 
   // Attach onended handlers to tracks so we react when sender stops/removes them
   stream.getTracks().forEach((track) => {
     if (!track.__onended_bound) {
       track.__onended_bound = true;
       track.onended = () => {
-        try { console.log("[usePeerConnection] remote track ended:", track.kind, track.id); } catch(e){}
         if (track.kind === "video") {
           // Clean up appropriate remote stream references
           if (callState.stateRef.current?.remoteScreenOn) {
             if (remoteScreen.current) {
-              remoteScreen.current.getTracks().forEach(t => { try { t.stop(); } catch(e){} });
+              remoteScreen.current.getTracks().forEach(t => { try { t.stop(); } catch { /* ignore */ } });
               remoteScreen.current = null;
             }
           } else {
             if (remoteStream.current) {
-              remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch(e){} });
+              remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch { /* ignore */ } });
               remoteStream.current = null;
             }
           }
@@ -63,7 +60,7 @@ export function usePeerConnection({ callState, send }) {
     if (remoteStream.current !== stream) {
       // stop previous audio stream tracks if different
       if (remoteStream.current && remoteStream.current.id !== stream.id) {
-        remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch(e){} });
+        remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch { /* ignore */ } });
       }
       remoteStream.current = stream;
     }
@@ -72,20 +69,19 @@ export function usePeerConnection({ callState, send }) {
     // video present: decide if this is screen or camera
     if (callState.stateRef.current?.remoteScreenOn) {
       if (remoteScreen.current && remoteScreen.current.id !== stream.id) {
-        remoteScreen.current.getTracks().forEach(t => { try { t.stop(); } catch(e){} });
+        remoteScreen.current.getTracks().forEach(t => { try { t.stop(); } catch { /* ignore */ } });
       }
       remoteScreen.current = stream;
       callState.setState((s) => ({ ...s, remoteStreamUpdatedAt: Date.now() }));
     } else {
       if (remoteStream.current && remoteStream.current.id !== stream.id) {
-        remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch(e){} });
+        remoteStream.current.getTracks().forEach(t => { try { t.stop(); } catch { /* ignore */ } });
       }
       remoteStream.current = stream;
       callState.setState((s) => ({ ...s, remoteStreamUpdatedAt: Date.now() }));
     }
   }
 
-  dumpPcInfo(pc.current, "ontrack");
 };
 
 

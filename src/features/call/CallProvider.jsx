@@ -46,50 +46,6 @@ export function CallProvider({ children }) {
     stateRef.current = state;
   }, [state]);
 
-  const dumpPcInfo = useCallback(async (label = "") => {
-    try {
-      console.log(
-        `[CallContext][PC INFO] ${label} getSenders:`,
-        pc.current
-          ?.getSenders()
-          .map((s) => ({ id: s.track?.id, kind: s.track?.kind }))
-      );
-      console.log(
-        `[CallContext][PC INFO] ${label} getTransceivers:`,
-        pc.current?.getTransceivers().map((t) => ({
-          mid: t.mid,
-          direction: t.direction,
-          sender: t.sender?.track?.id,
-          receiver: t.receiver?.track?.id,
-        }))
-      );
-      if (pc.current && pc.current.getStats) {
-        const stats = await pc.current.getStats();
-        const rows = [];
-        stats.forEach((r) => {
-          if (
-            r.type === "outbound-rtp" ||
-            r.type === "inbound-rtp" ||
-            r.type === "candidate-pair"
-          ) {
-            rows.push({
-              id: r.id,
-              type: r.type,
-              kind: r.kind || "",
-              mediaType: r.mediaType || "",
-              bytesSent: r.bytesSent,
-              bytesReceived: r.bytesReceived,
-              timestamp: r.timestamp,
-            });
-          }
-        });
-        console.log(`[CallContext][PC STATS] ${label}`, rows);
-      }
-    } catch (e) {
-      console.warn("[CallContext] dumpPcInfo error", e);
-    }
-  }, []);
-
   const createPeerConnection = useCallback(() => {
     if (pc.current) return;
 
@@ -106,18 +62,11 @@ export function CallProvider({ children }) {
           call_id: stateRef.current.callId,
           candidate: e.candidate,
         });
-        console.log("[CallContext] Sent ICE candidate");
       }
     };
 
     pc.current.ontrack = (e) => {
       const stream = e.streams[0];
-      console.log(
-        "[CallContext] PC ontrack event fired:",
-        stream?.id,
-        "Tracks:",
-        stream?.getTracks().map((t) => ({ id: t.id, kind: t.kind }))
-      );
       const vidTracks = stream?.getVideoTracks() || [];
       if (vidTracks.length === 0) {
         // only audio
@@ -137,25 +86,10 @@ export function CallProvider({ children }) {
           setState((s) => ({ ...s, remoteStreamUpdatedAt: Date.now() }));
         }
       }
-      dumpPcInfo("ontrack");
-    };
-
-    pc.current.onconnectionstatechange = () => {
-      console.log(
-        "[CallContext] PC connectionState:",
-        pc.current?.connectionState
-      );
-      if (
-        pc.current?.connectionState === "failed" ||
-        pc.current?.connectionState === "closed"
-      ) {
-        console.log("[CallContext] PC connection failed or closed.");
-      }
     };
 
     tracksAdded.current = { audio: false, video: false, screen: false };
-    console.log("[CallContext] Peer connection created.");
-  }, [send, dumpPcInfo]);
+  }, [send]);
 
   const getMediaOnce = useCallback(async (kind = "audio") => {
     const needVideo = kind === "video" || stateRef.current?.camOn;
@@ -213,7 +147,7 @@ export function CallProvider({ children }) {
             if (track.kind === "video" && !track._isBlackPlaceholder) {
               tracksAdded.current.cameraSender = sameKindSender;
             }
-          } catch (e) {
+          } catch {
             pc.current.addTrack(track, stream);
             const sender = pc.current
               .getSenders()
@@ -240,9 +174,8 @@ export function CallProvider({ children }) {
         if (track.kind === "video") tracksAdded.current.video = true;
       });
 
-      dumpPcInfo("after addLocalTracksOnce");
     },
-    [dumpPcInfo]
+    []
   );
 
   const addScreenTrackOnce = useCallback(
@@ -273,9 +206,8 @@ export function CallProvider({ children }) {
         console.warn("[CallContext] addScreenTrackOnce addTrack failed", e);
       }
 
-      dumpPcInfo("after addScreenTrackOnce");
     },
-    [dumpPcInfo]
+    []
   );
 
   const toggleMic = useCallback((on) => {
@@ -298,7 +230,7 @@ export function CallProvider({ children }) {
       if (recvVideoCount < 1) {
         try {
           pc.current.addTransceiver("video", { direction: "recvonly" });
-        } catch (e) {
+        } catch {
           /*ignore*/
         }
       }
@@ -306,7 +238,7 @@ export function CallProvider({ children }) {
       if (stateRef.current?.remoteScreenOn) {
         try {
           pc.current.addTransceiver("video", { direction: "recvonly" });
-        } catch (e) {
+        } catch {
           /*ignore*/
         }
       }
@@ -314,11 +246,10 @@ export function CallProvider({ children }) {
       const offer = await pc.current.createOffer();
       await pc.current.setLocalDescription(offer);
       send("webrtc:offer", { call_id: stateRef.current.callId, sdp: offer });
-      dumpPcInfo("after renegotiate createOffer");
     } catch (e) {
       console.error("[CallContext] Error during renegotiate:", e);
     }
-  }, [send, dumpPcInfo]);
+  }, [send]);
 
   const startScreenShare = useCallback(async () => {
     try {
@@ -408,7 +339,7 @@ export function CallProvider({ children }) {
             track.stop();
             try {
               localStream.current.removeTrack(track);
-            } catch (e) {
+            } catch {
               /*ignore*/
             }
           });
@@ -428,13 +359,13 @@ export function CallProvider({ children }) {
         videoTracksToRemove.forEach((t) => {
           try {
             t.enabled = false;
-          } catch (e) {}
+          } catch { /* ignore */ }
           try {
             t.stop();
-          } catch (e) {}
+          } catch { /* ignore */ }
           try {
             localStream.current.removeTrack(t);
-          } catch (e) {}
+          } catch { /* ignore */ }
         });
       }
 
@@ -492,7 +423,7 @@ export function CallProvider({ children }) {
               const black = createBlackVideoTrack();
               try {
                 localStream.current.addTrack(black);
-              } catch (e) {
+              } catch {
                 /*ignore*/
               }
               placeholder = black;
@@ -507,7 +438,7 @@ export function CallProvider({ children }) {
             } else {
               try {
                 pc.current.addTrack(placeholder, localStream.current);
-              } catch (e) {
+              } catch {
                 /*ignore*/
               }
             }
@@ -534,9 +465,8 @@ export function CallProvider({ children }) {
         send("call:camera", { call_id: stateRef.current.callId, enabled: on });
       }
 
-      dumpPcInfo("toggleCam end");
     },
-    [getMediaOnce, send, renegotiate, dumpPcInfo]
+    [getMediaOnce, send, renegotiate]
   );
 
   const resetState = useCallback(() => {
@@ -661,12 +591,11 @@ export function CallProvider({ children }) {
         pc.current.addTransceiver("video", { direction: "recvonly" });
         if (stateRef.current?.remoteScreenOn)
           pc.current.addTransceiver("video", { direction: "recvonly" });
-      } catch (e) {}
+      } catch { /* ignore */ }
 
       const answer = await pc.current.createAnswer();
       await pc.current.setLocalDescription(answer);
       send("webrtc:answer", { call_id: stateRef.current.callId, sdp: answer });
-      dumpPcInfo("handleOffer end");
     },
     [
       getMediaOnce,
@@ -674,7 +603,6 @@ export function CallProvider({ children }) {
       addLocalTracksOnce,
       send,
       addScreenTrackOnce,
-      dumpPcInfo,
     ]
   );
 
@@ -684,9 +612,8 @@ export function CallProvider({ children }) {
       await pc.current.setRemoteDescription(
         new RTCSessionDescription(payload.sdp)
       );
-      dumpPcInfo("after handleAnswer");
     },
-    [dumpPcInfo]
+    []
   );
 
   const handleIce = useCallback(async (payload) => {
@@ -745,12 +672,11 @@ export function CallProvider({ children }) {
         pc.current.addTransceiver("video", { direction: "recvonly" });
         if (stateRef.current?.remoteScreenOn)
           pc.current.addTransceiver("video", { direction: "recvonly" });
-      } catch (e) {}
+      } catch { /* ignore */ }
 
       const offer = await pc.current.createOffer();
       await pc.current.setLocalDescription(offer);
       send("webrtc:offer", { call_id: stateRef.current.callId, sdp: offer });
-      dumpPcInfo("after call:accept createOffer");
     };
 
     const rejected = () => resetState();
@@ -809,7 +735,6 @@ export function CallProvider({ children }) {
     resetState,
     send,
     renegotiate,
-    dumpPcInfo,
     addScreenTrackOnce,
   ]);
 

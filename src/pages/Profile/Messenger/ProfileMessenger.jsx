@@ -3,7 +3,6 @@ import { Forum, Search, Close } from "@mui/icons-material";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import { useWebSocket } from "../../../app/providers/WebSocketProvider";
 import PMSelectedChat from "../../../components/Profile/Messenger/PMSelectedChat";
 
 import UserAPI from "../../../app/api/UserApi";
@@ -79,13 +78,9 @@ export default function ProfileMessenger() {
     })();
   }, [urlId, chats]);
 
-  console.log(chats);
-
   useEffect(() => {
     fetchChats();
   }, []);
-
-  console.log(selectedChat)
 
   return (
     <section className="flex-1 flex bg-linear-to-b from-black via-gray-900 to-gray-950 text-white border-t border-gray-800 overflow-y-auto px-4 md:px-8 py-6 h-full">

@@ -26,7 +26,6 @@ export function WebSocketProvider({ children }) {
     setReconnecting(true);
 
     reconnectTimerRef.current = setInterval(() => {
-      console.log("🔄 Попытка переподключения...");
       wsRef.current?.connect(token);
     }, 3000);
   }, []);
@@ -51,7 +50,6 @@ export function WebSocketProvider({ children }) {
     wsRef.current = ws;
 
     const handleOpen = () => {
-      console.log("✅ WebSocket подключён");
       setConnected(true);
       setIsReady(true);
       stopReconnectLoop();

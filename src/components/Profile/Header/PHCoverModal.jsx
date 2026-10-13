@@ -88,7 +88,7 @@ export default function PHCoverModal({ user, setUser, onClose }) {
       setUser(res.user);
       onClose();
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Ошибка загрузки", err);
     } finally {
       setLoading(false);
