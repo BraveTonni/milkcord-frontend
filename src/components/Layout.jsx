@@ -21,7 +21,7 @@ export default function Layout() {
   const simpleHeaderPaths = ["/", "/login", "/register"];
   const isSimpleHeader = simpleHeaderPaths.includes(location.pathname);
 
-  const { connected, send, on, off } = useWebSocket();
+  const { connected, on, off } = useWebSocket();
 
   // Отслеживаем изменение статуса подключения
   useEffect(() => {

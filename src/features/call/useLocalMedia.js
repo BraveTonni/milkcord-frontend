@@ -65,7 +65,7 @@ export function useLocalMedia({ callState, pcHooks }) {
             if (track.kind === "video" && !track._isBlackPlaceholder) {
               pcHooks.tracksAdded.current.cameraSender = sameKindSender;
             }
-          } catch (e) {
+          } catch {
             pcHooks.pc.current.addTrack(track, stream);
             const sender = pcHooks.pc.current
               .getSenders()
@@ -113,7 +113,7 @@ export function useLocalMedia({ callState, pcHooks }) {
             track.stop();
             try {
               localStream.current.removeTrack(track);
-            } catch (e) {}
+            } catch { /* ignore */ }
           });
 
           const camStream = await navigator.mediaDevices.getUserMedia({
@@ -130,13 +130,13 @@ export function useLocalMedia({ callState, pcHooks }) {
         videoTracksToRemove.forEach((t) => {
           try {
             t.enabled = false;
-          } catch (e) {}
+          } catch { /* ignore */ }
           try {
             t.stop();
-          } catch (e) {}
+          } catch { /* ignore */ }
           try {
             localStream.current.removeTrack(t);
-          } catch (e) {}
+          } catch { /* ignore */ }
         });
       }
 
@@ -160,7 +160,7 @@ export function useLocalMedia({ callState, pcHooks }) {
               try {
                 await sender.replaceTrack(trackToSend);
                 pcHooks.tracksAdded.current.cameraSender = sender;
-              } catch (e) {
+              } catch {
                 pcHooks.pc.current.addTrack(trackToSend, localStream.current);
                 const newSender = pcHooks.pc.current
                   .getSenders()
@@ -190,7 +190,7 @@ export function useLocalMedia({ callState, pcHooks }) {
             const black = createBlackVideoTrack();
             try {
               localStream.current.addTrack(black);
-            } catch (e) {}
+            } catch { /* ignore */ }
             placeholder = black;
           }
 

@@ -67,7 +67,7 @@ export function useCallState() {
     []
   );
 
-  const acceptCall = useCallback(async (opts) => {
+  const acceptCall = useCallback(async () => {
     // actual accept handled in negotiation/localMedia hooks because they need pc & streams
     // This function acts as a flag switch and calls API.
     if (!stateRef.current?.callId) return;

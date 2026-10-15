@@ -13,7 +13,6 @@ import MessagesApi from "../../../app/api/MessagesApi";
 import getUserStatus from "../../../features/UserStatus";
 
 import { useCall } from "../../../features/call/CallProvider";
-import { useNavigate } from "react-router-dom";
 
 export default function PMSelectedChat({
   user,
@@ -30,9 +29,7 @@ export default function PMSelectedChat({
 
   const { startCall } = useCall();
 
-  const { send, on, off } = useWebSocket();
-
-  const navigate = useNavigate();
+  const { on, off } = useWebSocket();
 
   const chatId = currentChat?.id;
 

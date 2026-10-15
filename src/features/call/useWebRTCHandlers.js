@@ -54,7 +54,7 @@ export function useWebRTCHandlers({
         pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" });
         if (callState.stateRef.current?.remoteScreenOn)
           pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" });
-      } catch (e) {}
+      } catch { /* ignore */ }
 
       const offer = await pcHooks.pc.current.createOffer();
       await pcHooks.pc.current.setLocalDescription(offer);
@@ -85,7 +85,7 @@ export function useWebRTCHandlers({
     // 1) stop tracks in remoteScreen.current (if any)
     if (pcHooks.remoteScreen.current) {
       pcHooks.remoteScreen.current.getTracks().forEach((t) => {
-        try { t.stop(); } catch (e) {}
+        try { t.stop(); } catch { /* ignore */ }
       });
       pcHooks.remoteScreen.current = null;
     }
@@ -98,9 +98,9 @@ export function useWebRTCHandlers({
           const rt = r.track;
           if (!rt) return;
           if (rt.kind === "video" && rt.readyState !== "ended") {
-            try { rt.stop(); } catch (e) {}
+            try { rt.stop(); } catch { /* ignore */ }
           }
-        } catch (e) {}
+        } catch { /* ignore */ }
       });
     }
 
@@ -111,11 +111,11 @@ export function useWebRTCHandlers({
         if (transceivers.length > 1) {
           // keep one for camera, stop others
           transceivers.slice(1).forEach(t => {
-            try { t.stop(); } catch (e) {}
+            try { t.stop(); } catch { /* ignore */ }
           });
         }
       }
-    } catch (e) {}
+    } catch { /* ignore */ }
 
     // 4) update UI
     callState.setState((s) => ({ ...s, remoteStreamUpdatedAt: Date.now(), remoteScreenOn: false }));

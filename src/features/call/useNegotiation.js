@@ -10,10 +10,10 @@ export function useNegotiation({ callState, pcHooks, send, localMedia, screenSha
           t.receiver && t.receiver.track && t.receiver.track.kind === "video"
       ).length;
       if (recvVideoCount < 1) {
-        try { pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" }); } catch (e) {}
+        try { pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" }); } catch { /* ignore */ }
       }
       if (callState.stateRef.current?.remoteScreenOn) {
-        try { pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" }); } catch (e) {}
+        try { pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" }); } catch { /* ignore */ }
       }
 
       const offer = await pcHooks.pc.current.createOffer();
@@ -38,7 +38,7 @@ export function useNegotiation({ callState, pcHooks, send, localMedia, screenSha
       pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" });
       if (callState.stateRef.current?.remoteScreenOn)
         pcHooks.pc.current.addTransceiver("video", { direction: "recvonly" });
-    } catch (e) {}
+    } catch { /* ignore */ }
 
     const answer = await pcHooks.pc.current.createAnswer();
     await pcHooks.pc.current.setLocalDescription(answer);

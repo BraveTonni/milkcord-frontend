@@ -26,4 +26,16 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  {
+    // Провайдеры контекста экспортируют хук рядом с компонентом намеренно:
+    // вынос в отдельный файл дал бы только лишний boilerplate.
+    files: [
+      'src/app/providers/AuthProvider.jsx',
+      'src/app/providers/WebSocketProvider.jsx',
+      'src/features/call/CallProvider.jsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

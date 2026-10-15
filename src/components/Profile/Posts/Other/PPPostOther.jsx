@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { formatDateWithTime } from "../../../../features/Time";
 import PostsAPI from "../../../../app/api/PostsApi";

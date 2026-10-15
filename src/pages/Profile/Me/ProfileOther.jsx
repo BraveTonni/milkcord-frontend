@@ -9,16 +9,11 @@ import ProfileFriends from "../../../components/Profile/Friends/ProfileFriends";
 import ProfilePostsOther from "../../../components/Profile/Posts/Other/ProfilePostsOther";
 import ProfileHeaderOther from "../../../components/Profile/Header/Other/ProfileHeaderOther";
 
-import { useWebSocket } from "../../../app/providers/WebSocketProvider";
-
 export default function ProfileOther({ username }) {
   const [user, setUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  // === Подключаем вебсокет ===
-  const { connected } = useWebSocket();
 
   // === ЗАГРУЗКА ДАННЫХ ===
   useEffect(() => {

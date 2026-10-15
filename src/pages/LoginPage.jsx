@@ -49,7 +49,7 @@ export default function LoginPage() {
         toast.success(`Добро пожаловать, ${user.username}! 🥛`);
         setTimeout(() => navigate("/profile"), 1500);
       }
-    } catch (err) {
+    } catch {
       toast.error("Ошибка соединения с сервером 😢");
     } finally {
       setLoading(false);

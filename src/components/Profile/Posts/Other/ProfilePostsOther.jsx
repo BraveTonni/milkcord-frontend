@@ -14,7 +14,7 @@ function sortPosts(posts) {
   });
 }
 
-export default function ProfilePostsOther({ user, otherUser }) {
+export default function ProfilePostsOther({ otherUser }) {
   const [posts, setPosts] = useState([]);
 
   // === ЗАГРУЗКА ДАННЫХ ===

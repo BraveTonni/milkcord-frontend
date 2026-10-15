@@ -4,16 +4,12 @@ import {
   Close,
   Mic,
   MicOff,
-  Videocam,
-  VideocamOff,
   ScreenShare,
   CallEnd,
   FullscreenExit,
   StopScreenShare,
 } from "@mui/icons-material";
 import { useCall } from "./CallProvider";
-
-const log = (...a) => console.log("%c[CALL-WINDOW]", "color:#60a5fa;font-weight:bold", ...a);
 
 export default function CallWindow() {
   const {
@@ -26,7 +22,6 @@ export default function CallWindow() {
     localScreen,
     remoteScreen,
     toggleMic,
-    toggleCam,
     startScreenShare,
     stopScreenShare,
   } = useCall();
@@ -79,11 +74,6 @@ export default function CallWindow() {
   const handleToggleMic = () => {
     const newState = !call.micOn;
     toggleMic(newState);
-  };
-
-  const handleToggleCam = async () => {
-    const newState = !call.camOn;
-    await toggleCam(newState);
   };
 
   const handleToggleScreen = async () => {
@@ -173,14 +163,6 @@ export default function CallWindow() {
           >
             {call.micOn ? <Mic /> : <MicOff />}
           </button>
-
-          {/* <button
-            onClick={handleToggleCam}
-            className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 text-white"
-            title={call.camOn ? "Выключить камеру" : "Включить камеру"}
-          >
-            {call.camOn ? <Videocam /> : <VideocamOff />}
-          </button> */}
 
           <button
             onClick={handleToggleScreen}
